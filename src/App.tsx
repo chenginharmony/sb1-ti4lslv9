@@ -20,6 +20,26 @@ interface Creator {
   tokens: number;
   verified: boolean;
   tvl?: number;
+  // Zora specific
+  nftsMinted?: number;
+  totalVolume?: number;
+  floorPrice?: number;
+  // Base specific
+  contractsDeployed?: number;
+  gasOptimization?: number;
+  // Farcaster specific
+  casts?: number;
+  likes?: number;
+  recasts?: number;
+  channels?: number;
+  // Clanker specific
+  tokensLaunched?: number;
+  marketCap?: number;
+  holders?: number;
+  // Pumpfun specific
+  memeCoins?: number;
+  tradingVolume?: number;
+  ath?: number;
 }
 
 interface MetricCardProps {
@@ -66,7 +86,13 @@ const mockCreators: Creator[] = [
     funding: 25000000,
     tokens: 3,
     verified: true,
-    tvl: 45000000000
+    tvl: 45000000000,
+    contractsDeployed: 12,
+    gasOptimization: 95,
+    casts: 1250,
+    likes: 45000,
+    recasts: 8500,
+    channels: 5
   },
   {
     id: 2,
@@ -82,7 +108,13 @@ const mockCreators: Creator[] = [
     projects: 15,
     funding: 8500000,
     tokens: 12,
-    verified: true
+    verified: true,
+    nftsMinted: 2500,
+    totalVolume: 12500000,
+    floorPrice: 0.85,
+    tokensLaunched: 8,
+    marketCap: 2500000,
+    holders: 15000
   },
   {
     id: 3,
@@ -98,7 +130,14 @@ const mockCreators: Creator[] = [
     projects: 22,
     funding: 12000000,
     tokens: 5,
-    verified: true
+    verified: true,
+    casts: 850,
+    likes: 28000,
+    recasts: 5200,
+    channels: 8,
+    memeCoins: 3,
+    tradingVolume: 850000,
+    ath: 0.045
   },
   {
     id: 4,
@@ -114,7 +153,12 @@ const mockCreators: Creator[] = [
     projects: 6,
     funding: 5200000,
     tokens: 2,
-    verified: true
+    verified: true,
+    contractsDeployed: 8,
+    gasOptimization: 88,
+    nftsMinted: 450,
+    totalVolume: 2800000,
+    floorPrice: 0.12
   },
   {
     id: 5,
@@ -130,7 +174,14 @@ const mockCreators: Creator[] = [
     projects: 4,
     funding: 3800000,
     tokens: 1,
-    verified: true
+    verified: true,
+    casts: 620,
+    likes: 18500,
+    recasts: 3200,
+    channels: 3,
+    tokensLaunched: 2,
+    marketCap: 450000,
+    holders: 2800
   }
 ];
 
@@ -175,6 +226,504 @@ function App() {
       case 'GitHub': return <Github className="w-4 h-4" />;
       default: return <Globe className="w-4 h-4" />;
     }
+  };
+
+  const renderTable = () => {
+    if (activeSection === 'zora') {
+      return (
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+          <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+            <h2 className="text-lg font-bold flex items-center text-slate-900 dark:text-white">
+              <Activity className="w-5 h-5 mr-2 text-blue-500" />
+              🎨 Zora NFT Creators
+            </h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-slate-50 dark:bg-slate-800/50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">#</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Creator</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">NFTs Minted</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Total Volume</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Floor Price</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Followers</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">7d Growth</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Engagement</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                {filteredCreators.filter(c => c.nftsMinted).map((creator, index) => (
+                  <tr key={creator.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {index + 1}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <img 
+                          className="h-8 w-8 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-700" 
+                          src={creator.avatar} 
+                          alt={creator.name}
+                        />
+                        <div className="ml-3">
+                          <div className="text-sm font-semibold text-slate-900 dark:text-white flex items-center">
+                            {creator.name}
+                            {creator.verified && <span className="ml-1 text-blue-500">✓</span>}
+                          </div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400">
+                            {creator.handle}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {creator.nftsMinted?.toLocaleString()}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {formatNumber(creator.totalVolume || 0)}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {creator.floorPrice} ETH
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {formatFollowers(creator.totalFollowers)}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className={`text-sm font-semibold ${
+                        creator.weeklyGrowth > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+                      }`}>
+                        {creator.weeklyGrowth > 0 ? '+' : ''}{creator.weeklyGrowth}%
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900 dark:text-white">
+                      {creator.engagementRate}%
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSection === 'base') {
+      return (
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+          <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+            <h2 className="text-lg font-bold flex items-center text-slate-900 dark:text-white">
+              <Activity className="w-5 h-5 mr-2 text-blue-500" />
+              🔵 Base Builders
+            </h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-slate-50 dark:bg-slate-800/50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">#</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Builder</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Contracts</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Gas Efficiency</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">TVL</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Projects</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Funding</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">7d Growth</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                {filteredCreators.filter(c => c.contractsDeployed).map((creator, index) => (
+                  <tr key={creator.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {index + 1}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <img 
+                          className="h-8 w-8 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-700" 
+                          src={creator.avatar} 
+                          alt={creator.name}
+                        />
+                        <div className="ml-3">
+                          <div className="text-sm font-semibold text-slate-900 dark:text-white flex items-center">
+                            {creator.name}
+                            {creator.verified && <span className="ml-1 text-blue-500">✓</span>}
+                          </div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400">
+                            {creator.handle}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {creator.contractsDeployed}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className={`w-2 h-2 rounded-full mr-2 ${
+                          (creator.gasOptimization || 0) > 90 ? 'bg-emerald-500' : 
+                          (creator.gasOptimization || 0) > 80 ? 'bg-yellow-500' : 'bg-red-500'
+                        }`}></div>
+                        <span className="text-sm font-semibold text-slate-900 dark:text-white">
+                          {creator.gasOptimization}%
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {creator.tvl ? formatNumber(creator.tvl) : '-'}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900 dark:text-white">
+                      {creator.projects}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {formatNumber(creator.funding)}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className={`text-sm font-semibold ${
+                        creator.weeklyGrowth > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+                      }`}>
+                        {creator.weeklyGrowth > 0 ? '+' : ''}{creator.weeklyGrowth}%
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSection === 'farcaster') {
+      return (
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+          <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+            <h2 className="text-lg font-bold flex items-center text-slate-900 dark:text-white">
+              <Activity className="w-5 h-5 mr-2 text-blue-500" />
+              🟣 Farcaster Casters
+            </h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-slate-50 dark:bg-slate-800/50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">#</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Caster</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Casts</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Likes</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Recasts</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Channels</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Followers</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Engagement</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                {filteredCreators.filter(c => c.casts).map((creator, index) => (
+                  <tr key={creator.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {index + 1}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <img 
+                          className="h-8 w-8 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-700" 
+                          src={creator.avatar} 
+                          alt={creator.name}
+                        />
+                        <div className="ml-3">
+                          <div className="text-sm font-semibold text-slate-900 dark:text-white flex items-center">
+                            {creator.name}
+                            {creator.verified && <span className="ml-1 text-blue-500">✓</span>}
+                          </div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400">
+                            {creator.handle}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {creator.casts?.toLocaleString()}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {formatFollowers(creator.likes || 0)}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {formatFollowers(creator.recasts || 0)}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900 dark:text-white">
+                      {creator.channels}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {formatFollowers(creator.totalFollowers)}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900 dark:text-white">
+                      {creator.engagementRate}%
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSection === 'clanker') {
+      return (
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+          <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+            <h2 className="text-lg font-bold flex items-center text-slate-900 dark:text-white">
+              <Activity className="w-5 h-5 mr-2 text-blue-500" />
+              🤖 Clanker Token Creators
+            </h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-slate-50 dark:bg-slate-800/50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">#</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Creator</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Tokens Launched</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Market Cap</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Holders</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Followers</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">7d Growth</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Engagement</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                {filteredCreators.filter(c => c.tokensLaunched).map((creator, index) => (
+                  <tr key={creator.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {index + 1}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <img 
+                          className="h-8 w-8 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-700" 
+                          src={creator.avatar} 
+                          alt={creator.name}
+                        />
+                        <div className="ml-3">
+                          <div className="text-sm font-semibold text-slate-900 dark:text-white flex items-center">
+                            {creator.name}
+                            {creator.verified && <span className="ml-1 text-blue-500">✓</span>}
+                          </div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400">
+                            {creator.handle}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {creator.tokensLaunched}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {formatNumber(creator.marketCap || 0)}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {creator.holders?.toLocaleString()}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {formatFollowers(creator.totalFollowers)}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className={`text-sm font-semibold ${
+                        creator.weeklyGrowth > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+                      }`}>
+                        {creator.weeklyGrowth > 0 ? '+' : ''}{creator.weeklyGrowth}%
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900 dark:text-white">
+                      {creator.engagementRate}%
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSection === 'pumpfun') {
+      return (
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+          <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+            <h2 className="text-lg font-bold flex items-center text-slate-900 dark:text-white">
+              <Activity className="w-5 h-5 mr-2 text-blue-500" />
+              🚀 Pumpfun Meme Creators
+            </h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-slate-50 dark:bg-slate-800/50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">#</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Creator</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Meme Coins</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Trading Volume</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">ATH Price</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Followers</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">7d Growth</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Engagement</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                {filteredCreators.filter(c => c.memeCoins).map((creator, index) => (
+                  <tr key={creator.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {index + 1}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <img 
+                          className="h-8 w-8 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-700" 
+                          src={creator.avatar} 
+                          alt={creator.name}
+                        />
+                        <div className="ml-3">
+                          <div className="text-sm font-semibold text-slate-900 dark:text-white flex items-center">
+                            {creator.name}
+                            {creator.verified && <span className="ml-1 text-blue-500">✓</span>}
+                          </div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400">
+                            {creator.handle}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {creator.memeCoins}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {formatNumber(creator.tradingVolume || 0)}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      ${creator.ath}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                      {formatFollowers(creator.totalFollowers)}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className={`text-sm font-semibold ${
+                        creator.weeklyGrowth > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+                      }`}>
+                        {creator.weeklyGrowth > 0 ? '+' : ''}{creator.weeklyGrowth}%
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900 dark:text-white">
+                      {creator.engagementRate}%
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    // Default overview table
+    return (
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+        <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+          <h2 className="text-lg font-bold flex items-center text-slate-900 dark:text-white">
+            <Activity className="w-5 h-5 mr-2 text-blue-500" />
+            Creator Rankings
+          </h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-slate-50 dark:bg-slate-800/50">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">#</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Creator</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Type</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Platforms</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Followers</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">7d Growth</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Engagement</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Projects</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Funding</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Tokens</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+              {filteredCreators.map((creator, index) => (
+                <tr key={creator.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
+                  <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                    {index + 1}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <img 
+                        className="h-8 w-8 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-700" 
+                        src={creator.avatar} 
+                        alt={creator.name}
+                      />
+                      <div className="ml-3">
+                        <div className="text-sm font-semibold text-slate-900 dark:text-white flex items-center">
+                          {creator.name}
+                          {creator.verified && <span className="ml-1 text-blue-500">✓</span>}
+                        </div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400">
+                          {creator.handle}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${
+                      creator.type === 'Creator' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300' :
+                      creator.type === 'Builder' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' :
+                      'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300'
+                    }`}>
+                      {creator.type}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="flex space-x-2">
+                      {creator.platforms.slice(0, 3).map((platform, i) => (
+                        <span key={i} className="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+                          {getPlatformIcon(platform)}
+                        </span>
+                      ))}
+                      {creator.platforms.length > 3 && (
+                        <span className="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full">
+                          +{creator.platforms.length - 3}
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                    {formatFollowers(creator.totalFollowers)}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <span className={`text-sm font-semibold ${
+                      creator.weeklyGrowth > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+                    }`}>
+                      {creator.weeklyGrowth > 0 ? '+' : ''}{creator.weeklyGrowth}%
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900 dark:text-white">
+                    {creator.engagementRate}%
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900 dark:text-white">
+                    {creator.projects}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
+                    {formatNumber(creator.funding)}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900 dark:text-white">
+                    {creator.tokens}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -348,104 +897,7 @@ function App() {
           </div>
 
           {/* Creator Rankings Table */}
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
-            <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-              <h2 className="text-lg font-bold flex items-center text-slate-900 dark:text-white">
-                <Activity className="w-5 h-5 mr-2 text-blue-500" />
-                Creator Rankings
-              </h2>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-slate-50 dark:bg-slate-800/50">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">#</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Creator</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Type</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Platforms</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Followers</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">7d Growth</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Engagement</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Projects</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Funding</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Tokens</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                  {filteredCreators.map((creator, index) => (
-                    <tr key={creator.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
-                      <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
-                        {index + 1}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <img 
-                            className="h-8 w-8 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-700" 
-                            src={creator.avatar} 
-                            alt={creator.name}
-                          />
-                          <div className="ml-3">
-                            <div className="text-sm font-semibold text-slate-900 dark:text-white flex items-center">
-                              {creator.name}
-                              {creator.verified && <span className="ml-1 text-blue-500">✓</span>}
-                            </div>
-                            <div className="text-xs text-slate-500 dark:text-slate-400">
-                              {creator.handle}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${
-                          creator.type === 'Creator' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300' :
-                          creator.type === 'Builder' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' :
-                          'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300'
-                        }`}>
-                          {creator.type}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="flex space-x-2">
-                          {creator.platforms.slice(0, 3).map((platform, i) => (
-                            <span key={i} className="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
-                              {getPlatformIcon(platform)}
-                            </span>
-                          ))}
-                          {creator.platforms.length > 3 && (
-                            <span className="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full">
-                              +{creator.platforms.length - 3}
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
-                        {formatFollowers(creator.totalFollowers)}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <span className={`text-sm font-semibold ${
-                          creator.weeklyGrowth > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
-                        }`}>
-                          {creator.weeklyGrowth > 0 ? '+' : ''}{creator.weeklyGrowth}%
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900 dark:text-white">
-                        {creator.engagementRate}%
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900 dark:text-white">
-                        {creator.projects}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-white">
-                        {formatNumber(creator.funding)}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-900 dark:text-white">
-                        {creator.tokens}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          {renderTable()}
         </main>
       </div>
 
